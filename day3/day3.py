@@ -1,11 +1,9 @@
-with open('example_input') as f:
+with open('input') as f:
     lines = f.readlines()
-bits = 5
+bits = 12
 numlines = len(lines)
 
-
-
-def countbits(lineskeep):
+def countbits(list_to_eval):
     # Initiate dictionary char pos & counts
     counts = {}
     for c in range(bits):
@@ -14,29 +12,41 @@ def countbits(lineskeep):
         counts[key] = value
 
     # Count number of 1's in each character slot
-    for l in lineskeep:
+    for l in list_to_eval:
         for c in range(bits):
             if int(l[0][c]) == 1 and l[1] == "keep":
                 counts[c] += 1
-    print("counts is",counts)
     return counts
 
 def decode(phase):
-    # Convert lines (input) into 2-d list with original line & discard status
+    # Initiate list with data and "keep" status - one time (per phase)
     lineskeep = []
     for l in lines:
         lineskeep.append([l.strip('\n'),"keep"])
+    #print("=== Lineskeep initial status === ...")
+    #for l in lineskeep: print(l[0],"--",l[1])
+    #x = input()
 
     # Allocate a discard/keep status for each line; break if n-1 discards reached.
     discardcount = 0
     for c in range(bits):
+        numkeeps = 0
+        for l in lineskeep:
+            if l[1] == "keep": numkeeps += 1
+
         counts = countbits(lineskeep)
-        n = input()
-        if counts[c] <= int(numlines /2 ):
-            popchar = 0
-        else: popchar = 1
+        print("=================================")
+        print("Bit:",c,"Counts:")
+        print(counts)
+
+        if counts[c] * 2 >= numkeeps:
+            popchar = 1
+        else: popchar = 0
+        print("This time (counts[",c,"]=",counts[c],"numkeeps=",numkeeps,"popchar=",popchar)
         for l in lineskeep:
             if discardcount == len(lines) - 1:
+                print("=== final ===")
+                for l in lineskeep: print(l[0],"--",l[1])
                 for l in lineskeep:
                     if l[1] == "keep":
                         return int(l[0],2)
@@ -54,11 +64,14 @@ def decode(phase):
                         else:
                             l[1] = "discard"
                             discardcount += 1
+        for l in lineskeep: print(l[0],"--",l[1])
+        #x = input()
+
     return("Error")
 
 
 oxygen_generator_rating = decode("oxy")
-x = input()
+#x = input()
 co2scrub = decode("co2")
 
 
