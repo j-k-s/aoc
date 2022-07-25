@@ -74,8 +74,6 @@ oxygen_generator_rating = decode("oxy")
 #x = input()
 co2scrub = decode("co2")
 
-
-
 print("Oxygen generator rating is",oxygen_generator_rating)
 print("Co2 Scrubber rating is",co2scrub)
 print("product is", oxygen_generator_rating * co2scrub)
