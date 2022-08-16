@@ -11,6 +11,8 @@ with open('input') as f:
 opening_chars = {"(","[","{","<"}
 closing_chars = {")","]","}",">"}
 partner_char = {")" : "(", "]" : "[", "}" : "{", ">" : "<", "(" : ")", "[" : "]", "{" : "}", "<" : ">"}
+completion_scores = {")" : 1, "]" : 2, "}" : 3, ">" : 4}
+score_list = []
 
 def process_line(this_line):
     openings = []
@@ -28,7 +30,15 @@ def process_line(this_line):
             if expectedopening != lastopening:
                 outcome = ["error", expectedclosing, char]
                 return outcome
-    if len(openings) > 0: return ["incomplete",0,0]
+    if len(openings) > 0: ## incomplete
+        print("--- incomplete --- ")
+        print("remaining openings: ", openings)
+        score_count = 0
+        total_score = 0
+        while len(openings) > 0:
+            total_score = (5 * total_score) + completion_scores[partner_char[openings.pop(-1)]]
+        score_list.append(total_score)
+        return ["incomplete",0,0]
     if len(openings) == 0: return ["success",0,0]
 
 
@@ -38,10 +48,16 @@ def process_file():
     for l in lines:
         result = process_line(l)
         if result[0] == "error":
-            print("illegal char:", result[2], "points for that:",points[result[2]])
+            #print("illegal char:", result[2], "points for that:",points[result[2]])
             total_score += points[result[2]]
     return total_score
         #x = input()
 
+
+
 total_score = process_file()
 print(f"------------\nTotal score is: {total_score}")
+print(f"------------\nScore list is: {score_list}")
+score_list.sort()
+print("Middle score is:",score_list[int((len(score_list)-1)/2)])
+######################## ## Part 2 ## ########################
